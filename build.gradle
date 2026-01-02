@@ -5,7 +5,6 @@ plugins {
     id "me.shedaniel.unified-publishing" version "0.1.+"
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin' version '0.7.+'
-    id 'org.parchmentmc.librarian.forgegradle' version '1.+'
 }
 
 version = mod_version
@@ -36,7 +35,7 @@ minecraft {
     //
     // Use non-default mappings at your own risk. They may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'parchment', version: '2023.09.03-1.20.1'
+    mappings channel: 'official', version: '1.20.1'
     //    copyIdeResources = true
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     // Currently, this location cannot be changed from the default.
@@ -45,8 +44,8 @@ minecraft {
     // These can be tweaked, removed, or duplicated as needed.
     runs {
         client {
-            workingDirectory project.file('run/client')
-            jvmArg "-XX:+AllowEnhancedClassRedefinition"
+            workingDirectory project.file('run')
+
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
             // "SCAN": For mods scan.
@@ -60,7 +59,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            property 'forge.enabledGameTestNamespaces', 'mm'
+            property 'forge.enabledGameTestNamespaces', 'examplemod'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg"
             mods {
@@ -74,7 +73,7 @@ minecraft {
         }
 
         server {
-            workingDirectory project.file('run/server')
+            workingDirectory project.file('run')
 
             property 'forge.logging.markers', 'REGISTRIES'
 
@@ -98,7 +97,7 @@ minecraft {
         // By default, the server will crash when no gametests are provided.
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
-            workingDirectory project.file('run/test_server')
+            workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
@@ -127,7 +126,7 @@ minecraft {
         }
 
         data {
-            workingDirectory project.file('run/data')
+            workingDirectory project.file('run')
 
             property 'forge.logging.markers', 'REGISTRIES'
 
@@ -200,103 +199,40 @@ repositories {
             includeGroup 'dev.ftb.mods'
         }
     }
-    maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
-    maven { url = "https://maven.ithundxr.dev/mirror" } // Registrate
-    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
-
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.20.1-47.4.6'
+    minecraft 'net.minecraftforge:forge:1.20.1-47.3.7'
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     compileOnly 'org.projectlombok:lombok:1.18.24'
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
-
-    // ========================
-    // COMPILE MOD-ADDONS
-    // ========================
-
-    //JEI
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}"))
 
-    //JADE (WAILA)
-    compileOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
+    // at runtime, use the full JEI jar for Forge
+    runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
+    implementation fg.deobf("curse.maven:jade-324717:${jade_id}")
 
-    // MEKANISM
-    compileOnly fg.deobf("curse.maven:mekanism-268560:5125665")
+    implementation fg.deobf("curse.maven:mekanism-268560:5125665")
+    implementation fg.deobf("curse.maven:pneumaticcraft-281849:5279325")
 
-    //PNEUMATICCRAFT (PNCR)
-    compileOnly fg.deobf("curse.maven:pneumaticcraft-281849:5279325")
+    implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
+    implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
+    implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
 
-    //KUBEJS
-    compileOnly fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
-    compileOnly fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
-    compileOnly fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
-
-    // CREATE MOD
-    compileOnly(fg.deobf("com.simibubi.create:create-${mc_version}:${create_version}:slim") { transitive = false })
-    compileOnly(fg.deobf("net.createmod.ponder:Ponder-Forge-${mc_version}:${ponder_version}"))
-    compileOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-api-${mc_version}:${flywheel_version}"))
-    compileOnly(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}"))
-    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
-    compileOnly("io.github.llamalad7:mixinextras-forge:0.4.1")
-
-    //BOTANIA
-    compileOnly fg.deobf("vazkii.botania:Botania:${botania_version}")
-
-
-    // ========================
-    // RUNTIME MOD-ADDONS
-    // ========================
-
-    // PATCHUOLI
-    runtimeOnly fg.deobf("curse.maven:patchouli-306770:${patchouli_version}")
-
-    // CURIOS
-    runtimeOnly fg.deobf("curse.maven:curios-309927:${curios_version}")
-
-    // CREATE MOD
-    runtimeOnly(fg.deobf("com.simibubi.create:create-${mc_version}:${create_version}:slim") { transitive = false })
-    runtimeOnly(fg.deobf("net.createmod.ponder:Ponder-Forge-${mc_version}:${ponder_version}"))
-    runtimeOnly(fg.deobf("dev.engine-room.flywheel:flywheel-forge-${mc_version}:${flywheel_version}"))
-    runtimeOnly(fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}"))
-    runtimeOnly("io.github.llamalad7:mixinextras-forge:0.4.1")
-
-    // ProbeJS (kubejs)
     runtimeOnly fg.deobf("curse.maven:probejs-585406:5227399")
 
-    // JEI
-    runtimeOnly(fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}"))
+    implementation fg.deobf("com.simibubi.create:create-${create_minecraft_version}:${create_version}:slim") { transitive = false }
+    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
+    implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
 
-    //EMI
-//    runtimeOnly(fg.deobf("curse.maven:emi-580555:6420945"))
+    compileOnly fg.deobf("vazkii.botania:Botania:${botania_version}")
 
-    //JADE (WAILA)
-    runtimeOnly fg.deobf("curse.maven:jade-324717:${jade_id}")
-
-    // MEKANISM
-    runtimeOnly fg.deobf("curse.maven:mekanism-268560:5125665")
-
-    //PNEUMATICCRAFT (PNCR)
-    runtimeOnly fg.deobf("curse.maven:pneumaticcraft-281849:5279325")
-
-    // KUBEJS
-    runtimeOnly fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
-    runtimeOnly fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
-    runtimeOnly fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
-
-    // IMMERSIVE ENGINEERING
-    runtimeOnly fg.deobf("curse.maven:immersive-engineering-231951:6206989")
-
-    //BOTANIA
-    runtimeOnly fg.deobf("vazkii.botania:Botania:${botania_version}")
-
-    // SPARK PROFILER
-    runtimeOnly fg.deobf("curse.maven:spark-361579:4738952");
+//    runtimeOnly fg.deobf("curse.maven:patchouli-306770:4892162")
+//    runtimeOnly fg.deobf("curse.maven:curios-309927:5367944")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

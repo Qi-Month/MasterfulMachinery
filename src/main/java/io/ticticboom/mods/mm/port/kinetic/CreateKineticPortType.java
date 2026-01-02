@@ -1,6 +1,7 @@
 package io.ticticboom.mods.mm.port.kinetic;
 
-import com.simibubi.create.api.stress.BlockStressValues;
+import com.simibubi.create.content.kinetics.BlockStressValues;
+import io.ticticboom.mods.mm.Ref;
 import io.ticticboom.mods.mm.compat.kjs.builder.PortConfigBuilderJS;
 import io.ticticboom.mods.mm.model.PortModel;
 import io.ticticboom.mods.mm.port.IPortParser;
@@ -24,8 +25,7 @@ import java.util.function.Consumer;
 public class CreateKineticPortType extends PortType {
 
     public CreateKineticPortType() {
-        BlockStressValues.IMPACTS.registerProvider(MMKineticStressProviders::impactSupplier);
-        BlockStressValues.CAPACITIES.registerProvider(MMKineticStressProviders::capacitySupplier);
+        BlockStressValues.registerProvider(Ref.ID, new MMKineticStressProvider());
     }
 
     @Override

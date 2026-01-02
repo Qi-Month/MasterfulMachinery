@@ -65,6 +65,4 @@ public class BlockStructurePiece extends StructurePiece {
         json.addProperty("block", foundId.toString());
         return json;
     }
-
-    // better structure error showing to user
 }

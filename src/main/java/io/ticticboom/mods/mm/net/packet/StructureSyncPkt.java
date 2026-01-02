@@ -2,13 +2,18 @@ package io.ticticboom.mods.mm.net.packet;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import io.ticticboom.mods.mm.client.structure.GuiStructureRenderer;
 import io.ticticboom.mods.mm.structure.StructureManager;
 import io.ticticboom.mods.mm.structure.StructureModel;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketListener;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -52,6 +57,6 @@ public class StructureSyncPkt {
 
     public static void handler(StructureSyncPkt packet) {
         StructureManager.receiveStructures(packet.structures);
-        StructureManager.validateAllPieces();
+        GuiStructureRenderer.shouldEnsureValidated = true;
     }
 }

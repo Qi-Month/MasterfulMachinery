@@ -8,9 +8,7 @@ import io.ticticboom.mods.mm.client.structure.PositionedCyclingBlockRenderer;
 import io.ticticboom.mods.mm.compat.jei.SlotGrid;
 import io.ticticboom.mods.mm.controller.MMControllerRegistry;
 import io.ticticboom.mods.mm.model.IdList;
-import io.ticticboom.mods.mm.piece.StructurePieceSetupMetadata;
 import io.ticticboom.mods.mm.recipe.RecipeStorages;
-import io.ticticboom.mods.mm.structure.attachment.StructureAttachments;
 import io.ticticboom.mods.mm.structure.layout.PositionedLayoutPiece;
 import io.ticticboom.mods.mm.structure.layout.StructureLayout;
 import lombok.Getter;
@@ -36,10 +34,6 @@ public class StructureModel {
     private final String name;
     private final IdList controllerIds;
     private final StructureLayout layout;
-
-    @Getter
-    private final StructureAttachments attachments;
-
     @Getter
     private final JsonObject config;
 
@@ -59,14 +53,12 @@ public class StructureModel {
             String name,
             IdList controllerIds,
             StructureLayout layout,
-            StructureAttachments attachments,
             JsonObject config
     ) {
         this.id = id;
         this.name = name;
         this.controllerIds = controllerIds;
         this.layout = layout;
-        this.attachments = attachments;
         this.config = config;
         if (FMLEnvironment.dist == Dist.CLIENT) {
             renderer = new GuiStructureRenderer(this);
@@ -92,8 +84,7 @@ public class StructureModel {
         var name = json.get("name").getAsString();
         var layout = StructureLayout.parse(json, structureId);
         var ids = IdList.parse(json.get("controllerIds"));
-        var attachments = StructureAttachments.parse(json);
-        return new StructureModel(structureId, name, ids, layout, attachments, json);
+        return new StructureModel(structureId, name, ids, layout, json);
     }
 
     public static JsonObject paramsToJson(ResourceLocation id, String name, IdList controllerIds, StructureLayout layout) {
@@ -103,12 +94,6 @@ public class StructureModel {
         json.add("controllerIds", controllerIds.serialize());
         layout.serialize(json);
         return json;
-    }
-
-    public void validate() {
-        var meta = new StructurePieceSetupMetadata(id, this);
-        layout.validate(meta);
-        attachments.validate(meta);
     }
 
     public boolean formed(Level level, BlockPos controllerPos) {
@@ -187,10 +172,5 @@ public class StructureModel {
         }
         countedPartItems.add(new GuiCountedItemStack(1, controllerList, Component.literal("Controller").withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD), "C"));
         return countedPartItems;
-    }
-
-    @Override
-    public String toString() {
-        return "StructureModel{id=" + id + ", name=" + name + "}";
     }
 }

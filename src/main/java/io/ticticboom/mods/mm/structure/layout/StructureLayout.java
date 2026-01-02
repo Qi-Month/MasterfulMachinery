@@ -2,7 +2,6 @@ package io.ticticboom.mods.mm.structure.layout;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import io.ticticboom.mods.mm.piece.StructurePieceSetupMetadata;
 import io.ticticboom.mods.mm.port.IPortBlockEntity;
 import io.ticticboom.mods.mm.port.IPortStorage;
 import io.ticticboom.mods.mm.recipe.RecipeStorages;
@@ -86,9 +85,9 @@ public class StructureLayout {
         return json;
     }
 
-    public void validate(StructurePieceSetupMetadata meta) {
+    public void validate(StructureModel model) {
         for (StructureLayoutPiece value : pieces.values()) {
-            value.validate(meta);
+            value.validate(model);
         }
     }
 
@@ -143,9 +142,9 @@ public class StructureLayout {
         return json;
     }
 
-    public void setup(StructureModel model) {
+    public void setup(ResourceLocation structureId) {
         for (StructureLayoutPiece value : pieces.values()) {
-            value.setup(model);
+            value.setup(structureId);
         }
     }
 

@@ -43,13 +43,12 @@ public class BotaniaManaPortStorage implements IPortStorage {
 
     @Override
     public CompoundTag save(CompoundTag tag) {
-        tag.putInt("stored", stored);
-        return tag;
+        return null;
     }
 
     @Override
     public void load(CompoundTag tag) {
-        stored = tag.getInt("stored");
+
     }
 
     @Override
@@ -68,21 +67,17 @@ public class BotaniaManaPortStorage implements IPortStorage {
     }
 
     public int receiveMana(int mana, boolean sim) {
-        mana = Math.abs(mana);
         var canBeFilled = Math.min(capacity - stored, mana);
         if (!sim) {
             stored += canBeFilled;
-            this.changed.call();
         }
         return canBeFilled;
     }
 
     public int extractMana(int mana, boolean sim) {
-        mana = Math.abs(mana);
         var canBeDrained = Math.min(stored, mana);
         if (!sim) {
             stored -= canBeDrained;
-            this.changed.call();
         }
         return canBeDrained;
     }

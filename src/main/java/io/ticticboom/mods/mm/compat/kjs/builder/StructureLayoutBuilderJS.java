@@ -19,6 +19,7 @@ public class StructureLayoutBuilderJS {
     private final StructureBuilderJS root;
 
     public StructureLayoutBuilderJS(StructureBuilderJS root) {
+
         this.root = root;
     }
 

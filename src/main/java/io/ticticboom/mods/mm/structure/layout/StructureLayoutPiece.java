@@ -37,7 +37,8 @@ public class StructureLayoutPiece {
         this.json = json;
     }
 
-    public void validate(StructurePieceSetupMetadata meta) {
+    public void validate(StructureModel model) {
+        StructurePieceSetupMetadata meta = new StructurePieceSetupMetadata(model.id());
         piece.validateSetup(meta);
         List<Block> blocks = piece.createBlocksSupplier().get();
         if (blocks.isEmpty()){
@@ -69,8 +70,8 @@ public class StructureLayoutPiece {
         return new StructureLayoutPiece(piece, modifiers, guiPiece, keyChar, json);
     }
 
-    public void setup(StructureModel model) {
-        var meta = new StructurePieceSetupMetadata(model.id(), model);
+    public void setup(ResourceLocation structureId) {
+        var meta = new StructurePieceSetupMetadata(structureId);
         piece.validateSetup(meta);
         var blocks = piece.createBlocksSupplier().get();
         for (StructurePieceModifier modifier : modifiers) {

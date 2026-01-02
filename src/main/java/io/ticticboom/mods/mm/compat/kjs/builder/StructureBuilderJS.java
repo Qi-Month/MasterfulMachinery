@@ -3,7 +3,6 @@ package io.ticticboom.mods.mm.compat.kjs.builder;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import io.ticticboom.mods.mm.model.IdList;
 import io.ticticboom.mods.mm.structure.StructureModel;
-import io.ticticboom.mods.mm.structure.attachment.StructureAttachments;
 import io.ticticboom.mods.mm.structure.layout.StructureLayout;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
@@ -15,13 +14,13 @@ import java.util.function.Consumer;
 @Getter
 public class StructureBuilderJS {
 
-    private final List<ResourceLocation> controllers = new ArrayList<>();
+    private final List<ResourceLocation> controllers=  new ArrayList<>();
     private final ResourceLocation id;
     private String name;
     private Consumer<StructureLayoutBuilderJS> layoutConsumer;
 
     public StructureBuilderJS(String id) {
-        this.id = ResourceLocation.tryParse(id);
+        this.id = new ResourceLocation(id);
     }
 
     public StructureBuilderJS name(String name) {
@@ -30,7 +29,7 @@ public class StructureBuilderJS {
     }
 
     public StructureBuilderJS controllerId(String id) {
-        controllers.add(ResourceLocation.tryParse(id));
+        controllers.add(new ResourceLocation(id));
         return this;
     }
 
@@ -45,7 +44,6 @@ public class StructureBuilderJS {
         layoutConsumer.accept(event);
         IdList controllerIds = new IdList(controllers);
         StructureLayout layout = event.build();
-        // TODO: create real structure attachment js builders
-        return new StructureModel(id, name, controllerIds, layout, new StructureAttachments(List.of()), StructureModel.paramsToJson(id, name, controllerIds, layout));
+        return new StructureModel(id, name, controllerIds, layout, StructureModel.paramsToJson(id, name, controllerIds, layout));
     }
 }
